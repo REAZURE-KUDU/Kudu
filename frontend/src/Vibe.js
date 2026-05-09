@@ -4,6 +4,7 @@ import "./Vibe.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from './api';
 
 const Vibe = () => {
   const { user, getAccessTokenSilently, isLoading, isAuthenticated } = useAuth0();
@@ -27,7 +28,7 @@ const Vibe = () => {
       try {
         const token = await getAccessTokenSilently();
 
-        const res = await fetch("/api/auth/sync", {
+        const res = await fetch(`${API_BASE_URL}/api/auth/sync`, {
           method: "POST",
           headers: {
             "Content-Type":  "application/json",
@@ -110,7 +111,7 @@ const Vibe = () => {
         ...(selectedRole === "vendor" && vendorForm),
       };
 
-      const res = await fetch(`/api/auth/register/${selectedRole}`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/register/${selectedRole}`, {
         method: "POST",
         headers: {
           "Content-Type":  "application/json",
