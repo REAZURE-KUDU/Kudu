@@ -50,7 +50,7 @@ const ReviewForm = ({ order, onReviewSubmitted }) => {
       const token = await getAccessTokenSilently({
         authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE },
       });
-      const res = await fetch("${API_BASE_URL}/api/reviews", {
+      const res = await fetch(`${API_BASE_URL}/api/reviews`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ orderId: order._id, rating, comment }),
