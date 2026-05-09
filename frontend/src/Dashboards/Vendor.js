@@ -71,7 +71,7 @@ const Vendor = () => {
     if (!vendorId) return;
     try {
       const token = await getToken();
-      const res = await fetch(`${API_BASE_URL}/api/menu?vendor=${vendorId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/menu-items/vendor/${vendorId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -165,7 +165,7 @@ const Vendor = () => {
     try {
       const token = await getToken();
       const { priceCents, ...rest } = formData;
-      const res = await fetch(`${API_BASE_URL}/api/menu`, {
+      const res = await fetch(`${API_BASE_URL}/api/menu-items`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ ...rest, price: priceCents / 100, vendor: vendorId }),
@@ -185,7 +185,7 @@ const Vendor = () => {
     try {
       const token = await getToken();
       const { priceCents, ...rest } = formData;
-      const res = await fetch(`${API_BASE_URL}/api/menu/${editingId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/menu-items/${editingId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ ...rest, price: priceCents / 100 }),
@@ -202,7 +202,7 @@ const Vendor = () => {
   const handleConfirmDelete = async () => {
     try {
       const token = await getToken();
-      const res = await fetch(`${API_BASE_URL}/api/menu/${pendingDeleteId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/menu-items/${pendingDeleteId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
