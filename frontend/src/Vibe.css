@@ -1,0 +1,106 @@
+/* Layout */
+.vibe {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card */
+.vibe__card {
+  width: 900px;
+  padding: 50px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+/* Title */
+.vibe__title {
+  font-size: 48px;
+  font-weight: 600;
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Subtitle */
+.vibe__subtitle {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #e2e8f0;
+}
+
+/* Options */
+.vibe__options {
+  display: flex;
+  gap: 30px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.vibe__option {
+  flex: 1;
+  min-width: 200px;
+  max-width: 250px;
+  padding: 30px 20px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.vibe__option:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Text */
+.vibe__option h2 {
+  margin-top: 0;
+  font-size: 20px;
+  color: white;
+}
+
+.vibe__option p {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+/* Admin input blob */
+.vibe__admin-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* Button */
+.vibe__button {
+  width: 100%;
+  margin-top: 40px;
+  padding: 18px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.vibe__button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+}

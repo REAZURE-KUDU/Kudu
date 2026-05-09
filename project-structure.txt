@@ -1,0 +1,113 @@
+KuduDash Main/KuduDash/
+├── README.md  
+├── backend/  
+│   ├── app.js  
+│   ├── jest.config.js  
+│   ├── package.json  
+│   ├── server.js  
+│   └── src/  
+│       └── controllers/  
+│       │   ├── adminController.js  
+│       │   ├── cartController.js
+│       │   ├── menuItemController.js  
+│       │   ├── orderController.js
+│       │   ├── paymentController.js
+│       │   ├── reviewController.js
+│       │   ├── studentController.js  
+│       │   └── vendorController.js
+│       └── models/  
+│       │   ├── Admin.js  
+│       │   ├── Cart.js 
+│       │   ├── MenuItem.js  
+│       │   ├── Order.js 
+│       │   ├── Review.js 
+│       │   ├── Student.js  
+│       │   └── Vendor.js  
+│       └── routes/  
+│       |   ├── adminRoutes.js  
+│       |   ├── auth.routes.js  
+│       │   ├── cartRoutes.js 
+│       |   ├── menuItemRoutes.js  
+│       |   ├── orderRoutes.js  
+│       │   ├── paymentRoutes.js 
+│       │   ├── reviewRoutes.js 
+│       |   ├── studentRoutes.js  
+│       |   └── vendorRoutes.js  
+│       └── middleware/ 
+|       |   └── auth.js
+│       └── tests/
+│       │   ├── adminController.test.js  
+│       │   ├── cartController.test.js
+│       │   ├── menuItemController.test.js  
+│       │   ├── orderController.test.js
+│       │   ├── paymentController.test.js
+│       │   ├── studentController.test.js  
+│       │   └── vendorController.test.js
+
+├── frontend/  
+│   ├── package.json  
+│   ├── README.md  
+│   ├── server.js  
+│   ├── build/  
+│   │   ├── asset-manifest.json  
+│   │   ├── index.html  
+│   │   ├── manifest.json  
+│   │   ├── robots.txt  
+│   │   ├── web.config  
+│   │   └── static/  
+│   │       ├── css/  
+│   │       │   └── main.ccfa3180.css  
+│   │       └── js/  
+│   │           ├── 453.825386d9.chunk.js  
+│   │           ├── main.649c6396.js  
+│   │           └── main.649c6396.js.LICENSE.txt  
+│   ├── public/  
+│   │   ├── index.html  
+│   │   ├── manifest.json  
+│   │   ├── robots.txt  
+│   │   └── web.config  
+│   └── src/  
+│       ├── App.css  
+│       ├── App.js  
+│       ├── App.test.js  
+│       ├── Callback.js  
+│       ├── index.css  
+│       ├── index.js  
+│       ├── Login.css  
+│       ├── Login.js  
+│       ├── reportWebVitals.js  
+│       ├── ReviewForm.css  
+│       ├── ReviewForm.js  
+│       ├── setupTests.js  
+│       ├── VendorReview.css  
+│       ├── VendorReview.js  
+│       ├── Vibe.css  
+│       ├── Vibe.js  
+│       └── Dashboards/  
+│       |    ├── Admin.css  
+│       |    ├── Admin.js  
+│       |    ├── Student.css  
+│       |    ├── Student.js  
+│       |    ├── Vendor.css  
+│       |    ├── Vendor.js
+|       |    ├── ProfilePanel.js
+|       |    ├── ProfilePanel.css
+|       |    ├── OrderManagement.js
+|       |    ├── OrderManagement.css
+|       |    ├── OrderTracking.js
+|       |    ├── OrderTracking.css
+|       └── Cart/
+|            ├── CartContext.js
+|            ├── Cart.css
+|            ├── Cart.js
+|            ├── Checkout.css
+|            ├── Checkout.js
+|       └── payment/
+|           ├── Payment.css
+|           ├── Payment.js
+|           ├── VendorEarnings.css
+|           └── VendorEarnings.js         
+
+- The backend folder contains your Node.js/Express API, with controllers, models, and route definitions.
+- The frontend folder contains your React app, with source code in src/, static assets in public/, and build output in build/.
+- Each dashboard (Admin, Student, Vendor) has its own component and styles in frontend/src/Dashboards/.

@@ -1,0 +1,341 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap');
+/* Dashboards/Vendor.css */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  color: inherit;
+}
+
+/* APP BACKGROUND */
+.kd-app {
+  font-family: 'DM Sans', sans-serif;
+  background: radial-gradient(circle at center, #1e293b, #0f172a);
+  min-height: 100vh;
+  color: #e2e8f0;
+}
+
+.kd-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 70px;
+  height: 100vh;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(110, 231, 183, 0.1);
+  transition: width 0.25s ease;
+  z-index: 100;
+}
+
+.kd-sidebar.expanded {
+  width: 220px;
+}
+
+.kd-logo {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  padding: 0 20px 20px;
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  border-bottom: 1px solid rgba(110, 231, 183, 0.1);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.kd-nav {
+  flex: 1;
+  margin-top: 10px;
+}
+
+.kd-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.kd-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  stroke: #6ee7b7;
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.kd-nav-text {
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.kd-sidebar.expanded .kd-nav-text {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.kd-nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.kd-nav-item.active {
+  border-left: 2px solid #6ee7b7;
+  background: rgba(110, 231, 183, 0.08);
+}
+
+.kd-main {
+  margin-left: 70px;
+  padding: 32px;
+  transition: margin-left 0.25s ease;
+}
+
+.kd-sidebar.expanded ~ .kd-main {
+  margin-left: 220px;
+}
+
+.kd-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.kd-page-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: white;
+}
+
+.kd-page-sub {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.kd-section-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 16px;
+}
+
+.kd-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  background: linear-gradient(to bottom right, #6ee7b7, #6366f1);
+  color: #0f172a;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.kd-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(110, 231, 183, 0.5);
+}
+
+.kd-menu-toprow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* FIXED alignment */
+  margin-bottom: 28px;
+}
+
+.kd-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.kd-empty-state {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 20px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.kd-empty-icon {
+  width: 48px;
+  height: 48px;
+  stroke: #334155;
+  stroke-width: 1.4;
+  fill: none;
+}
+
+.kd-item-card {
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(110, 231, 183, 0.1);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.kd-item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+.kd-item-image {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+.kd-item-image-placeholder {
+  width: 100%;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
+  margin: 0;
+}
+
+.kd-item-image-placeholder svg {
+  width: 36px;
+  height: 36px;
+  stroke: #334155;
+  fill: none;
+  stroke-width: 1.4;
+}
+
+.kd-item-body {
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kd-item-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.kd-item-description {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.kd-item-price {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6ee7b7;
+  margin-top: 4px;
+}
+
+.kd-item-category {
+  font-size: 11px;
+  color: #475569;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 6px;
+  padding: 2px 8px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.kd-item-actions {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(110, 231, 183, 0.07);
+}
+
+.kd-btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.kd-btn.primary {
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  color: #0f172a;
+}
+
+/* 🔥 ADD ITEM BUTTON FIX */
+.kd-menu-toprow .kd-btn.primary {
+  min-width: 1800px;
+  padding: 12px 22px;
+  font-weight: 600;
+  border-radius: 12px;
+}
+
+.kd-btn.primary:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+.kd-btn.ghost {
+  background: rgba(255, 255, 255, 0.05);
+  color: #6ee7b7;
+  border: 1px solid rgba(110, 231, 183, 0.2);
+  flex: 1;
+}
+
+.kd-btn.ghost:hover {
+  background: rgba(110, 231, 183, 0.1);
+}
+
+.kd-btn.danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  flex: 1;
+}
+
+.kd-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.18);
+}
+
+/* rest unchanged */

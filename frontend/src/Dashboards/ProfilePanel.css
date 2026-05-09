@@ -1,0 +1,429 @@
+/* ── ProfilePanel.css ────────────────────────────────────────────────
+   Matches the existing KuduDash design tokens:
+   fonts  : Baloo 2, Syne, DM Sans
+   palette: #0f172a bg · #6ee7b7 teal · #6366f1 indigo · #e2e8f0 text
+──────────────────────────────────────────────────────────────────── */
+
+/* ── Wrapper ── */
+.pp-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* ── Avatar button ── */
+.pp-avatar-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid rgba(110, 231, 183, 0.4);
+  background: linear-gradient(to bottom right, #6ee7b7, #6366f1);
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+.pp-avatar-btn:hover {
+  border-color: rgba(110, 231, 183, 0.8);
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(110, 231, 183, 0.5);
+}
+
+.pp-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pp-avatar-initials {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+}
+
+/* ── Dropdown panel ── */
+.pp-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 300px;
+  background: #1e293b;
+  border: 1px solid rgba(110, 231, 183, 0.15);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  z-index: 300;
+  animation: pp-appear 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pp-appear {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+/* ── Header ── */
+.pp-header {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Role-tinted header strip */
+.pp-panel--vendor  .pp-header { background: linear-gradient(135deg, rgba(110,231,183,0.08), rgba(99,102,241,0.08)); }
+.pp-panel--student .pp-header { background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(168,85,247,0.08)); }
+.pp-panel--admin   .pp-header { background: linear-gradient(135deg, rgba(251,191,36,0.06), rgba(239,68,68,0.06));  }
+
+.pp-role-badge {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.pp-panel--vendor  .pp-role-badge { background: rgba(110,231,183,0.15); color: #6ee7b7; border: 1px solid rgba(110,231,183,0.3); }
+.pp-panel--student .pp-role-badge { background: rgba(99,102,241,0.15);  color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3);  }
+.pp-panel--admin   .pp-role-badge { background: rgba(251,191,36,0.12);  color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+
+.pp-display-name {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pp-email {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Body ── */
+.pp-body {
+  padding: 14px 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.pp-body::-webkit-scrollbar { width: 4px; }
+.pp-body::-webkit-scrollbar-track { background: transparent; }
+.pp-body::-webkit-scrollbar-thumb { background: rgba(110,231,183,0.2); border-radius: 4px; }
+
+/* ── Read-only field list ── */
+.pp-fields {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pp-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.pp-field:last-child {
+  border-bottom: none;
+}
+
+.pp-field--logo {
+  justify-content: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding-bottom: 12px;
+}
+
+.pp-label {
+  font-size: 12px;
+  color: #64748b;
+  font-family: 'DM Sans', sans-serif;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.pp-value {
+  font-size: 13px;
+  color: #e2e8f0;
+  font-family: 'DM Sans', sans-serif;
+  text-align: right;
+  font-weight: 500;
+}
+
+.pp-value--desc {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 400;
+  text-align: right;
+  line-height: 1.5;
+}
+
+.pp-logo-display {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid rgba(110, 231, 183, 0.2);
+}
+
+/* ── Edit button (vendor read mode) ── */
+.pp-btn-edit {
+  width: 100%;
+  margin-top: 14px;
+  padding: 9px;
+  border-radius: 10px;
+  border: 1px solid rgba(110, 231, 183, 0.25);
+  background: rgba(110, 231, 183, 0.07);
+  color: #6ee7b7;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.pp-btn-edit:hover {
+  background: rgba(110, 231, 183, 0.13);
+  border-color: rgba(110, 231, 183, 0.45);
+}
+
+/* ── Edit form ── */
+.pp-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Logo upload button */
+.pp-logo-upload-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.pp-logo-upload-btn {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 14px;
+  border: 2px dashed rgba(110, 231, 183, 0.3);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.15s;
+  padding: 0;
+}
+
+.pp-logo-upload-btn:hover {
+  border-color: rgba(110, 231, 183, 0.6);
+}
+
+.pp-logo-upload-btn:hover .pp-logo-overlay {
+  opacity: 1;
+}
+
+.pp-logo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pp-logo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 100%;
+  color: #64748b;
+  font-size: 10px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.pp-logo-placeholder svg {
+  width: 20px;
+  height: 20px;
+  stroke: #6ee7b7;
+  stroke-width: 1.8;
+  fill: none;
+}
+
+.pp-logo-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  color: #6ee7b7;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.pp-logo-hint {
+  font-size: 10px;
+  color: #475569;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* Input groups */
+.pp-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pp-input-group span {
+  font-size: 12px;
+  color: #94a3b8;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+}
+
+.pp-input-group input,
+.pp-input-group textarea {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(110, 231, 183, 0.15);
+  border-radius: 9px;
+  padding: 8px 12px;
+  color: #e2e8f0;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+
+.pp-input-group input:focus,
+.pp-input-group textarea:focus {
+  border-color: rgba(110, 231, 183, 0.5);
+}
+
+.pp-input-group input::placeholder,
+.pp-input-group textarea::placeholder {
+  color: #334155;
+}
+
+/* Error message */
+.pp-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #f87171;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* Edit action buttons */
+.pp-edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.pp-btn-cancel,
+.pp-btn-save {
+  flex: 1;
+  padding: 9px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+
+.pp-btn-cancel {
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pp-btn-cancel:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.pp-btn-save {
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.pp-btn-save:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.pp-btn-cancel:disabled,
+.pp-btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Footer ── */
+.pp-footer {
+  padding: 12px 20px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pp-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(239, 68, 68, 0.18);
+  background: rgba(239, 68, 68, 0.07);
+  color: #f87171;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.pp-logout-btn:hover {
+  background: rgba(239, 68, 68, 0.13);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.pp-logout-btn svg {
+  width: 15px;
+  height: 15px;
+  stroke: #f87171;
+  stroke-width: 2;
+  fill: none;
+  flex-shrink: 0;
+}
+/* ProfilePanel.css */

@@ -1,0 +1,81 @@
+.kd-payment-page { max-width: 560px; margin: 0 auto; }
+
+.kd-payment-status {
+  text-align: center; padding: 4rem 2rem;
+  background: rgba(255,255,255,0.03);
+  border-radius: 24px; border: 1px solid rgba(110,231,183,0.1);
+}
+.kd-payment-status-icon { font-size: 64px; margin-bottom: 1rem; }
+.kd-payment-status-title {
+  font-family: 'Baloo 2', sans-serif; font-size: 26px; font-weight: 700;
+  color: #e2e8f0; margin-bottom: 0.5rem;
+}
+.kd-payment-status-title.success {
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.kd-payment-status-title.failed { color: #f87171; }
+.kd-payment-status-sub { font-family: 'DM Sans', sans-serif; font-size: 15px; color: #64748b; margin-bottom: 2rem; line-height: 1.6; }
+
+.kd-payment-card {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(110,231,183,0.12);
+  border-radius: 24px; padding: 2rem; backdrop-filter: blur(8px);
+}
+.kd-payment-card-title {
+  font-family: 'Baloo 2', sans-serif; font-size: 22px; font-weight: 700;
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 0.5rem;
+}
+.kd-payment-amount-display {
+  font-family: 'Syne', sans-serif; font-size: 14px; color: #64748b;
+  margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(110,231,183,0.08);
+}
+.kd-payment-amount-display strong { color: #6ee7b7; font-size: 20px; font-weight: 700; }
+
+.kd-stripe-element-wrapper {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(110,231,183,0.2);
+  border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; transition: border-color 0.2s;
+}
+.kd-stripe-element-wrapper:focus-within { border-color: #6ee7b7; }
+
+.kd-pay-btn {
+  width: 100%; padding: 14px;
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  border: none; border-radius: 999px; color: #0f172a;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px;
+  cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+}
+.kd-pay-btn:hover:not(:disabled) { transform: translateY(-2px); opacity: 0.9; }
+.kd-pay-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.kd-pay-btn-spinner {
+  width: 18px; height: 18px; border: 2.5px solid rgba(15,23,42,0.3);
+  border-top-color: #0f172a; border-radius: 50%; animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.kd-payment-error {
+  margin-top: 1rem; padding: 0.85rem 1rem;
+  background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.25);
+  border-radius: 12px; color: #f87171; font-family: 'DM Sans', sans-serif; font-size: 13px;
+  display: flex; align-items: flex-start; gap: 0.5rem;
+}
+.kd-secure-badge {
+  display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+  margin-top: 1rem; font-family: 'DM Sans', sans-serif; font-size: 11px; color: #475569;
+}
+.kd-payment-actions { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+.kd-payment-action-btn {
+  padding: 12px 28px; border-radius: 999px; font-family: 'Syne', sans-serif;
+  font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s;
+  text-align: center; text-decoration: none; display: inline-block;
+}
+.kd-payment-action-btn.primary { background: linear-gradient(to right, #6ee7b7, #6366f1); border: none; color: #0f172a; }
+.kd-payment-action-btn.primary:hover { transform: translateY(-2px); opacity: 0.9; }
+.kd-payment-action-btn.secondary { background: none; border: 1px solid rgba(110,231,183,0.25); color: #94a3b8; }
+.kd-payment-action-btn.secondary:hover { border-color: #6ee7b7; color: #6ee7b7; }
+
+.kd-payment-skeleton {
+  height: 56px; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 14px;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }

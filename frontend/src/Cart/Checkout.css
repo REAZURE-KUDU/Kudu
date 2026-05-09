@@ -1,0 +1,204 @@
+
+.kd-checkout-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.kd-checkout-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 2rem;
+}
+
+/* Multi-Vendor Warning */
+.kd-multi-vendor-warning {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(245, 158, 11, 0.1);
+  border-left: 4px solid #f59e0b;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.kd-warning-icon {
+  font-size: 24px;
+}
+
+.kd-warning-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: #fbbf24;
+}
+
+/* Order Summary Card */
+.kd-order-summary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(110, 231, 183, 0.1);
+  border-radius: 20px;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+.kd-summary-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(110, 231, 183, 0.1);
+}
+
+.kd-vendor-checkout-section {
+  margin-bottom: 1.5rem;
+}
+
+.kd-vendor-checkout-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #6ee7b7;
+  margin-bottom: 0.75rem;
+}
+
+.kd-checkout-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 14px;
+  color: #cbd5e1;
+}
+
+.kd-checkout-item-name {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.kd-checkout-item-quantity {
+  color: #6ee7b7;
+}
+
+.kd-vendor-checkout-subtotal {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(110, 231, 183, 0.08);
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+/* Payment Panel */
+.kd-payment-panel {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(110, 231, 183, 0.1);
+  border-radius: 20px;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+}
+
+.kd-payment-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 1.25rem;
+}
+
+.kd-payment-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  font-size: 14px;
+  color: #cbd5e1;
+}
+
+.kd-payment-row.total {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(110, 231, 183, 0.15);
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.kd-payment-row.total span:last-child {
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: 22px;
+}
+
+.kd-error-message {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(248, 113, 113, 0.15);
+  border-radius: 12px;
+  color: #f87171;
+  font-size: 13px;
+  text-align: center;
+}
+
+.kd-place-order-btn {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 14px;
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  border: none;
+  border-radius: 999px;
+  color: #0f172a;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.kd-place-order-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.kd-place-order-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kd-back-to-cart {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  color: #64748b;
+  font-size: 13px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.kd-back-to-cart:hover {
+  color: #6ee7b7;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .kd-checkout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kd-payment-panel {
+    position: static;
+  }
+}
