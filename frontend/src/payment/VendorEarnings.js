@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import './VendorEarnings.css';
-import API_BASE_URL from './api';
+import API_BASE_URL from '../api';
 
 const formatDate = (iso) => {
   if (!iso) return '—';

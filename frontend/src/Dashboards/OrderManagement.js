@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import "./OrderManagement.css";
-import API_BASE_URL from './api';
+import API_BASE_URL from '../api';
 
 const POLL_INTERVAL = 5000;
 

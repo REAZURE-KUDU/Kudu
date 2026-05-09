@@ -3,7 +3,7 @@ import "./Admin.css";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useLocation } from "react-router-dom";
 import ProfilePanel from "./ProfilePanel";
-import API_BASE_URL from './api';
+import API_BASE_URL from '../api';
 
 const initials = (name) =>
   name.split(" ").slice(0, 2).map((w) => w[0].toUpperCase()).join("");

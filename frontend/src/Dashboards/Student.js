@@ -7,7 +7,7 @@ import "./Student.css";
 import ProfilePanel from "./ProfilePanel";
 import OrderTracking from "./OrderTracking";
 import ReviewForm from "../ReviewForm";
-import API_BASE_URL from './api';
+import API_BASE_URL from '../api';
 
 const CATEGORIES = ["Food", "Drink", "Snack", "Dessert", "Other"];
 

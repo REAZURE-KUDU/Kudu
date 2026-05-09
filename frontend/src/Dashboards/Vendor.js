@@ -6,7 +6,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import ProfilePanel from "./ProfilePanel";
 import OrderManagement from "./OrderManagement";
 import VendorReviews from "../VendorReviews";
-import API_BASE_URL from './api';
+import API_BASE_URL from '../api';
 
 const CATEGORIES = ["Food", "Drink", "Snack", "Dessert", "Other"];
 

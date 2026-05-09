@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import './Payment.css';
-import API_BASE_URL from './api';
+import API_BASE_URL from '../api';
 
 // Displayed after PayFast redirects the student back to return_url.
 // Checks if the payment was cancelled via query param, then polls the verify endpoint

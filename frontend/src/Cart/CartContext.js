@@ -3,7 +3,7 @@ import React, {
   createContext, useContext, useState, useEffect, useCallback,
 } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import API_BASE_URL from './api';
+import API_BASE_URL from '../api';
 
 const CartContext = createContext();
 const API = `${API_BASE_URL}/api/cart`;

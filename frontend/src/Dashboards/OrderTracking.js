@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import "./OrderTracking.css";
 import ReviewForm from "../ReviewForm";
-import API_BASE_URL from './api';
+import API_BASE_URL from '../api';
 
 const STATUS_STEPS = [
   { key: "pending",    label: "Placed",     description: "Order received, awaiting vendor confirmation" },
