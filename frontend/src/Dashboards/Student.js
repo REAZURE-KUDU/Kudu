@@ -7,6 +7,7 @@ import "./Student.css";
 import ProfilePanel from "./ProfilePanel";
 import OrderTracking from "./OrderTracking";
 import ReviewForm from "../ReviewForm";
+import API_BASE_URL from './api';
 
 const CATEGORIES = ["Food", "Drink", "Snack", "Dessert", "Other"];
 
@@ -66,7 +67,7 @@ const Student = () => {
       authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE },
     })
       .then((token) =>
-        fetch(`/api/students/${auth0User.sub}`, {
+        fetch(`${API_BASE_URL}/api/students/${auth0User.sub}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
       )
@@ -76,7 +77,7 @@ const Student = () => {
   }, [auth0User, getAccessTokenSilently]);
 
   useEffect(() => {
-    fetch("/api/vendors")
+    fetch(`${API_BASE_URL}/api/vendors`)
       .then((res) => { if (!res.ok) throw new Error("Failed to fetch vendors"); return res.json(); })
       .then((data) => { setVendors(data); setLoadingVendors(false); })
       .catch((err) => { setError(err.message); setLoadingVendors(false); });
@@ -86,7 +87,7 @@ const Student = () => {
     if (!selectedVendor) return;
     setLoadingMenu(true);
     setMenuItems([]);
-    fetch(`/api/menu?vendor=${selectedVendor._id}`)
+    fetch(`${API_BASE_URL}/api/menu?vendor=${selectedVendor._id}`)
       .then((res) => { if (!res.ok) throw new Error("Failed to fetch menu"); return res.json(); })
       .then((data) => { setMenuItems(data); setLoadingMenu(false); })
       .catch((err) => { setError(err.message); setLoadingMenu(false); });
@@ -120,7 +121,7 @@ const Student = () => {
           })),
           totalAmount: vendorCart.subtotal,
         };
-        return fetch("/api/orders", {
+        return fetch(`${API_BASE_URL}/api/orders`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify(orderData),

@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import "./OrderManagement.css";
+import API_BASE_URL from './api';
 
 const POLL_INTERVAL = 5000;
 
@@ -245,7 +246,7 @@ const OrderManagement = () => {
     try {
       const token = await getToken();
       console.log("Fetching vendor orders...");
-      const res = await fetch("/api/vendors/orders", {
+      const res = await fetch(`${API_BASE_URL}/api/vendors/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) {
@@ -289,7 +290,7 @@ const OrderManagement = () => {
       console.log("Sending PATCH request to:", `/api/orders/${orderId}/status`);
       console.log("Request body:", body);
 
-      const res = await fetch(`/api/orders/${orderId}/status`, {
+      const res = await fetch(`${API_BASE_URL}/api/orders/${orderId}/status`, {
         method: "PATCH",
         headers: { 
           "Content-Type": "application/json", 

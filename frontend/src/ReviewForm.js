@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import "./ReviewForm.css";
+import API_BASE_URL from './api';
 
 const ReviewForm = ({ order, onReviewSubmitted }) => {
   const { getAccessTokenSilently } = useAuth0();
@@ -19,7 +20,7 @@ const ReviewForm = ({ order, onReviewSubmitted }) => {
         const token = await getAccessTokenSilently({
           authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE },
         });
-        const res = await fetch(`/api/reviews/order/${order._id}`, {
+        const res = await fetch(`${API_BASE_URL}/api/reviews/order/${order._id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -49,7 +50,7 @@ const ReviewForm = ({ order, onReviewSubmitted }) => {
       const token = await getAccessTokenSilently({
         authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE },
       });
-      const res = await fetch("/api/reviews", {
+      const res = await fetch("${API_BASE_URL}/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ orderId: order._id, rating, comment }),

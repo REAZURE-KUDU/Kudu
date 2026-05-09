@@ -1,13 +1,14 @@
 //VendorReview.js
 import React, { useState, useEffect } from "react";
 import "./VendorReviews.css";
+import API_BASE_URL from './api';
 
 const VendorReviews = ({ vendorId }) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/reviews/vendor/${vendorId}`)
+    fetch(`${API_BASE_URL}/api/reviews/vendor/${vendorId}`)
       .then((res) => res.json())
       .then((data) => { setReviews(Array.isArray(data) ? data : []); })
       .catch(() => setReviews([]))

@@ -3,6 +3,7 @@ import "./Admin.css";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useLocation } from "react-router-dom";
 import ProfilePanel from "./ProfilePanel";
+import API_BASE_URL from './api';
 
 const initials = (name) =>
   name.split(" ").slice(0, 2).map((w) => w[0].toUpperCase()).join("");
@@ -48,7 +49,7 @@ const VendorMenuTab = ({ vendorId }) => {
         console.warn("Could not get access token, proceeding without auth header:", tokenErr.message);
       }
 
-      const res = await fetch(`/api/menu-items/vendor/${vendorId}`, { headers });
+      const res = await fetch(`${API_BASE_URL}/api/menu-items/vendor/${vendorId}`, { headers });
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
@@ -150,7 +151,7 @@ const VendorModal = ({ vendor, onClose }) => {
           authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE },
         });
         const res = await fetch(
-          `/api/orders/admin/vendor/${vendor._id}`,
+          `${API_BASE_URL}/api/orders/admin/vendor/${vendor._id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const data = await res.json();
@@ -299,7 +300,7 @@ const StudentModal = ({ student, onClose }) => {
           authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE },
         });
         const res = await fetch(
-          `/api/orders/admin/student/${student._id}`,
+          `${API_BASE_URL}/api/orders/admin/student/${student._id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const data = await res.json();
@@ -436,7 +437,7 @@ const StudentsPage = () => {
   const [loading, setLoading]               = useState(true);
 
   useEffect(() => {
-    fetch("/api/students")
+    fetch(`${API_BASE_URL}/api/students`)
       .then((res) => res.json())
       .then((data) => { setStudents(data); setLoading(false); })
       .catch(() => setLoading(false));
@@ -450,7 +451,7 @@ const StudentsPage = () => {
   }), [students, search, filterStatus]);
 
   const toggleStatus = (id) => {
-    fetch(`/api/students/${id}`, {
+    fetch(`${API_BASE_URL}/api/students/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ isActive: !students.find((s) => s._id === id)?.isActive }),
@@ -508,7 +509,7 @@ const VendorsPage = () => {
   const [loading, setLoading]                   = useState(true);
 
   useEffect(() => {
-    fetch("/api/vendors")
+    fetch(`${API_BASE_URL}/api/vendors`)
       .then((res) => res.json())
       .then((data) => { setVendors(data); setLoading(false); })
       .catch(() => setLoading(false));
@@ -520,7 +521,7 @@ const VendorsPage = () => {
   }), [vendors, search, filterStatus]);
 
   const handleSuspend = (id, reason) => {
-    fetch(`/api/vendors/${id}/suspend`, {
+    fetch(`${API_BASE_URL}/api/vendors/${id}/suspend`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ reason }),
@@ -533,7 +534,7 @@ const VendorsPage = () => {
   };
 
   const handleReinstate = (id) => {
-    fetch(`/api/vendors/${id}/reinstate`, {
+    fetch(`${API_BASE_URL}/api/vendors/${id}/reinstate`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
     })
@@ -609,7 +610,7 @@ const OverviewPage = () => {
 
   const fetchOrders = useCallback(async () => {
     try {
-      const res = await fetch("/api/orders/admin/all");
+      const res = await fetch(`${API_BASE_URL}/api/orders/admin/all`);
       if (!res.ok) throw new Error("Failed to fetch orders");
       const data = await res.json();
       setOrders(data);
@@ -624,7 +625,7 @@ const OverviewPage = () => {
 
   const fetchStudents = useCallback(async () => {
     try {
-      const res = await fetch("/api/students");
+      const res = await fetch(`${API_BASE_URL}/api/students`);
       if (!res.ok) throw new Error("Failed to fetch students");
       const data = await res.json();
       setStudents(Array.isArray(data) ? data : []);
@@ -638,7 +639,7 @@ const OverviewPage = () => {
       const token = await getAccessTokenSilently({
         authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE },
       });
-      const res = await fetch("/api/vendors", {
+      const res = await fetch(`${API_BASE_URL}/api/vendors`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch vendors");
@@ -884,7 +885,7 @@ const Admin = () => {
     getAccessTokenSilently({
       authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE },
     })
-      .then((token) => fetch(`/api/admin/${auth0User.sub}`, { headers: { Authorization: `Bearer ${token}` } }))
+      .then((token) => fetch(`${API_BASE_URL}/api/admin/${auth0User.sub}`, { headers: { Authorization: `Bearer ${token}` } }))
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => { if (data) setAdminProfile(data); })
       .catch(console.error);

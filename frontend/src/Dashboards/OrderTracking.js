@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import "./OrderTracking.css";
 import ReviewForm from "../ReviewForm";
+import API_BASE_URL from './api';
 
 const STATUS_STEPS = [
   { key: "pending",    label: "Placed",     description: "Order received, awaiting vendor confirmation" },
@@ -224,7 +225,7 @@ const OrderTracking = ({ successOrders }) => {
       const token = await getAccessTokenSilently({
         authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE },
       });
-      const res = await fetch("/api/orders", {
+      const res = await fetch(`${API_BASE_URL}/api/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch orders");

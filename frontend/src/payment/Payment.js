@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import './Payment.css';
+import API_BASE_URL from './api';
 
 // Displayed after PayFast redirects the student back to return_url.
 // Checks if the payment was cancelled via query param, then polls the verify endpoint
@@ -39,7 +40,7 @@ function PaymentResult({ orderId }) {
         const token = await getAccessTokenSilently({
           authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE },
         });
-        const res  = await fetch(`/api/payments/verify/${orderId}`, {
+        const res  = await fetch(`${API_BASE_URL}/api/payments/verify/${orderId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -157,12 +158,12 @@ const PaymentPage = ({ showResult = false }) => {
         });
 
         const [intentRes, orderRes] = await Promise.all([
-          fetch('/api/payments/initiate', {
+          fetch(`${API_BASE_URL}/api/payments/initiate`, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body:    JSON.stringify({ orderId }),
           }),
-          fetch(`/api/orders/${orderId}`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${API_BASE_URL}/api/orders/${orderId}`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
 
         const intentData = await intentRes.json();

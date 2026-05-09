@@ -6,6 +6,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import ProfilePanel from "./ProfilePanel";
 import OrderManagement from "./OrderManagement";
 import VendorReviews from "../VendorReviews";
+import API_BASE_URL from './api';
 
 const CATEGORIES = ["Food", "Drink", "Snack", "Dessert", "Other"];
 
@@ -54,7 +55,7 @@ const Vendor = () => {
     if (!vendorId) return;
     try {
       const token = await getToken();
-      const res = await fetch(`/api/vendors/${vendorId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/vendors/${vendorId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Failed to fetch vendor profile");
@@ -70,7 +71,7 @@ const Vendor = () => {
     if (!vendorId) return;
     try {
       const token = await getToken();
-      const res = await fetch(`/api/menu?vendor=${vendorId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/menu?vendor=${vendorId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -84,7 +85,7 @@ const Vendor = () => {
 
   const handleProfileUpdate = async (formData) => {
     const token = await getToken();
-    const res = await fetch(`/api/vendors/${vendorId}/profile`, {
+    const res = await fetch(`${API_BASE_URL}/api/vendors/${vendorId}/profile`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
@@ -164,7 +165,7 @@ const Vendor = () => {
     try {
       const token = await getToken();
       const { priceCents, ...rest } = formData;
-      const res = await fetch("/api/menu", {
+      const res = await fetch(`${API_BASE_URL}/api/menu`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ ...rest, price: priceCents / 100, vendor: vendorId }),
@@ -184,7 +185,7 @@ const Vendor = () => {
     try {
       const token = await getToken();
       const { priceCents, ...rest } = formData;
-      const res = await fetch(`/api/menu/${editingId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/menu/${editingId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ ...rest, price: priceCents / 100 }),
@@ -201,7 +202,7 @@ const Vendor = () => {
   const handleConfirmDelete = async () => {
     try {
       const token = await getToken();
-      const res = await fetch(`/api/menu/${pendingDeleteId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/menu/${pendingDeleteId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

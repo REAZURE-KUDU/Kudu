@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import './VendorEarnings.css';
+import API_BASE_URL from './api';
 
 const formatDate = (iso) => {
   if (!iso) return '—';
@@ -24,7 +25,7 @@ const VendorEarnings = () => {
         const token = await getAccessTokenSilently({
           authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE },
         });
-        const res  = await fetch('/api/payments/vendor/earnings', {
+        const res  = await fetch(`${API_BASE_URL}/api/payments/vendor/earnings`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
