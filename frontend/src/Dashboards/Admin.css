@@ -901,7 +901,7 @@ figure { margin: 0; }
 
 .kd-menu-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   padding: 10px;
   border-radius: var(--kd-r-md);
@@ -983,6 +983,67 @@ figure { margin: 0; }
   color: var(--kd-emerald);
   margin: 0;
   letter-spacing: -0.01em;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MENU ITEM TAGS (dietary + allergens)
+───────────────────────────────────────────────────────────── */
+.kd-menu-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 7px;
+}
+
+/* Allergen row gets a subtle top separator from the dietary row */
+.kd-menu-item-tags--allergens {
+  margin-top: 5px;
+}
+
+/* ⚠ Contains: prefix label */
+.kd-tag-prefix {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--kd-amber);
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+.kd-tag-prefix svg {
+  width: 11px;
+  height: 11px;
+  stroke: var(--kd-amber);
+  flex-shrink: 0;
+}
+
+/* Base pill */
+.kd-tag {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: var(--kd-r-pill);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  line-height: 1.7;
+  white-space: nowrap;
+}
+
+/* Dietary — emerald green */
+.kd-tag--dietary {
+  background: rgba(110, 231, 183, 0.1);
+  color: var(--kd-emerald);
+  border: 1px solid rgba(110, 231, 183, 0.22);
+}
+
+/* Allergen — warm red */
+.kd-tag--allergen {
+  background: rgba(239, 68, 68, 0.08);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.18);
 }
 
 /* ─────────────────────────────────────────────────────────────

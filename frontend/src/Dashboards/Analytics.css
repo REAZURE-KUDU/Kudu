@@ -1,0 +1,59 @@
+.an-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 24px;
+  padding-bottom: 40px;
+}
+
+.an-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(110, 231, 183, 0.1);
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.an-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.an-card-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(to right, #6ee7b7, #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.an-export-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(110, 231, 183, 0.2);
+  background: rgba(110, 231, 183, 0.08);
+  color: #6ee7b7;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.an-export-btn:hover {
+  background: rgba(110, 231, 183, 0.16);
+}
+
+.an-empty {
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+  padding: 40px 0;
+}
+
+.an-loading {
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+  padding: 60px 0;
+}

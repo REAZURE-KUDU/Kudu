@@ -7,6 +7,9 @@ const {
   createVendor,
   updateVendor,
   updateVendorProfile,
+  suspendVendor,
+  reinstateVendor,
+  requireNotSuspended,
 } = require("../controllers/vendorController");
 
 const mockRes = () => {
@@ -204,3 +207,194 @@ describe("Vendor Controller", () => {
     });
   });
 });
+
+// suspendVendor
+  describe("suspendVendor", () => {
+    it("suspends a vendor with a reason", async () => {
+      const vendor = { businessName: "Vendor", status: "suspended" };
+      Vendor.findByIdAndUpdate.mockResolvedValue(vendor);
+
+      const req = { params: { id: "123" }, body: { reason: "Policy violation" } };
+      const res = mockRes();
+
+      await suspendVendor(req, res);
+
+      expect(Vendor.findByIdAndUpdate).toHaveBeenCalledWith(
+        "123",
+        {
+          status: "suspended",
+          statusReason: "Policy violation",
+          suspendedAt: expect.any(Date),
+        },
+        { new: true }
+      );
+      expect(res.json).toHaveBeenCalledWith(vendor);
+    });
+
+    it("returns 400 if reason is missing", async () => {
+      const req = { params: { id: "123" }, body: {} };
+      const res = mockRes();
+
+      await suspendVendor(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "A suspension reason is required.",
+      });
+    });
+
+    it("returns 400 if reason is blank", async () => {
+      const req = { params: { id: "123" }, body: { reason: "   " } };
+      const res = mockRes();
+
+      await suspendVendor(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "A suspension reason is required.",
+      });
+    });
+
+    it("returns 404 if vendor not found", async () => {
+      Vendor.findByIdAndUpdate.mockResolvedValue(null);
+
+      const req = { params: { id: "123" }, body: { reason: "Policy violation" } };
+      const res = mockRes();
+
+      await suspendVendor(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({ message: "Vendor not found" });
+    });
+
+    it("handles server error", async () => {
+      Vendor.findByIdAndUpdate.mockRejectedValue(new Error("DB error"));
+
+      const req = { params: { id: "123" }, body: { reason: "Policy violation" } };
+      const res = mockRes();
+
+      await suspendVendor(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ message: "DB error" });
+    });
+  });
+
+  // reinstateVendor
+  describe("reinstateVendor", () => {
+    it("reinstates a vendor", async () => {
+      const vendor = { businessName: "Vendor", status: "active" };
+      Vendor.findByIdAndUpdate.mockResolvedValue(vendor);
+
+      const req = { params: { id: "123" } };
+      const res = mockRes();
+
+      await reinstateVendor(req, res);
+
+      expect(Vendor.findByIdAndUpdate).toHaveBeenCalledWith(
+        "123",
+        { status: "active", statusReason: "", suspendedAt: null },
+        { new: true }
+      );
+      expect(res.json).toHaveBeenCalledWith(vendor);
+    });
+
+    it("returns 404 if vendor not found", async () => {
+      Vendor.findByIdAndUpdate.mockResolvedValue(null);
+
+      const req = { params: { id: "123" } };
+      const res = mockRes();
+
+      await reinstateVendor(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({ message: "Vendor not found" });
+    });
+
+    it("handles server error", async () => {
+      Vendor.findByIdAndUpdate.mockRejectedValue(new Error("DB error"));
+
+      const req = { params: { id: "123" } };
+      const res = mockRes();
+
+      await reinstateVendor(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ message: "DB error" });
+    });
+  });
+
+  // requireNotSuspended
+  describe("requireNotSuspended", () => {
+    it("calls next() if no vendorId is present", async () => {
+      const req = { params: {}, query: {}, body: {} };
+      const res = mockRes();
+      const next = jest.fn();
+
+      await requireNotSuspended(req, res, next);
+
+      expect(next).toHaveBeenCalled();
+    });
+
+    it("calls next() if vendor is active", async () => {
+      Vendor.findById.mockReturnValue({
+        select: jest.fn().mockResolvedValue({ status: "active" }),
+      });
+
+      const req = { params: { id: "123" }, query: {}, body: {} };
+      const res = mockRes();
+      const next = jest.fn();
+
+      await requireNotSuspended(req, res, next);
+
+      expect(next).toHaveBeenCalled();
+    });
+
+    it("returns 403 if vendor is suspended", async () => {
+      Vendor.findById.mockReturnValue({
+        select: jest.fn().mockResolvedValue({ status: "suspended" }),
+      });
+
+      const req = { params: { id: "123" }, query: {}, body: {} };
+      const res = mockRes();
+      const next = jest.fn();
+
+      await requireNotSuspended(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Your account has been suspended. Please contact support.",
+      });
+      expect(next).not.toHaveBeenCalled();
+    });
+
+    it("returns 404 if vendor not found", async () => {
+      Vendor.findById.mockReturnValue({
+        select: jest.fn().mockResolvedValue(null),
+      });
+
+      const req = { params: { id: "123" }, query: {}, body: {} };
+      const res = mockRes();
+      const next = jest.fn();
+
+      await requireNotSuspended(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({ message: "Vendor not found" });
+    });
+
+    it("handles server error", async () => {
+      Vendor.findById.mockReturnValue({
+        select: jest.fn().mockRejectedValue(new Error("DB error")),
+      });
+
+      const req = { params: { id: "123" }, query: {}, body: {} };
+      const res = mockRes();
+      const next = jest.fn();
+
+      await requireNotSuspended(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ message: "DB error" });
+    });
+  });

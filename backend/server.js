@@ -12,6 +12,7 @@ const authRoutes     = require("./src/routes/auth.routes");
 const cartRoutes    = require("./src/routes/cartRoutes");
 const paymentRoutes = require("./src/routes/paymentRoutes");
 const reviewRoutes = require('./src/routes/reviewRoutes');
+const appealRoutes = require("./src/routes/appealRoutes");
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use("/api/auth",     authRoutes);
 app.use("/api/cart",     cartRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/appeals", appealRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)

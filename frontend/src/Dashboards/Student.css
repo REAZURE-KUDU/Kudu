@@ -30,6 +30,7 @@ button {
   backdrop-filter: blur(12px);
   border-right: 1px solid rgba(110, 231, 183, 0.1);
   transition: width 0.25s ease;
+  z-index: 100;
 }
 
 .kd-sidebar.expanded {
@@ -71,6 +72,7 @@ button {
   stroke: #6ee7b7;
   stroke-width: 1.8;
   fill: none;
+  flex-shrink: 0;
 }
 
 .kd-nav-text {
@@ -83,6 +85,7 @@ button {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  white-space: nowrap;
 }
 
 .kd-sidebar.expanded .kd-nav-text {
@@ -165,14 +168,16 @@ button {
   box-shadow: 0 6px 20px rgba(110, 231, 183, 0.5);
 }
 
-/* VENDOR GRID */
+/* ── VENDOR GRID ─────────────────────────────────────────────────────── */
+
 .kd-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 20px;
 }
 
-/* VENDOR CARD */
+/* ── VENDOR CARD ─────────────────────────────────────────────────────── */
+
 .kd-vendor-card {
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.05);
@@ -248,7 +253,8 @@ button {
   padding: 8px 16px 16px;
 }
 
-/* MENU VIEW */
+/* ── MENU VIEW ───────────────────────────────────────────────────────── */
+
 .kd-menu-view {
   display: flex;
   flex-direction: column;
@@ -270,6 +276,8 @@ button {
   gap: 20px;
 }
 
+/* ── Menu card ───────────────────────────────────────────────────────── */
+
 .kd-menu-card {
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.05);
@@ -285,11 +293,21 @@ button {
   transform: translateY(-3px);
 }
 
+.kd-menu-card--sold-out {
+  opacity: 0.65;
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.kd-menu-card--sold-out:hover {
+  transform: none;
+}
+
 article.kd-menu-card figure {
   margin: 0;
   background: rgba(51, 46, 103, 0.372);
   aspect-ratio: 16 / 9;
   overflow: hidden;
+  position: relative;
 }
 
 article.kd-menu-card figure img {
@@ -325,8 +343,40 @@ article.kd-menu-card footer button {
   transition: background 0.12s;
 }
 
-article.kd-menu-card footer button:hover {
+article.kd-menu-card footer button:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.18);
+}
+
+article.kd-menu-card footer button:disabled,
+article.kd-menu-card footer button.kd-btn--unavailable {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+/* ── Sold-out badge ──────────────────────────────────────────────────── */
+
+.kd-sold-out-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 6px;
+  pointer-events: none;
+  animation: kd-badge-in 0.2s ease;
+}
+
+@keyframes kd-badge-in {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 .kd-menu-image {
@@ -336,7 +386,30 @@ article.kd-menu-card footer button:hover {
   border-radius: 12px;
 }
 
-/* BUTTON */
+/* ── Tag rows (dietary / allergen badges) ────────────────────────────── */
+
+.kd-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.kd-info-badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.kd-allergen-badge {
+  font-size: 11px;
+}
+
+/* ── BUTTON ──────────────────────────────────────────────────────────── */
+
 .kd-btn {
   padding: 10px 18px;
   border-radius: 10px;
@@ -378,7 +451,8 @@ article.kd-menu-card footer button:hover {
   background: rgba(239, 68, 68, 0.18);
 }
 
-/* CATEGORY BAR */
+/* ── CATEGORY BAR ────────────────────────────────────────────────────── */
+
 .kd-category-bar {
   display: flex;
   gap: 10px;
@@ -433,7 +507,8 @@ article.kd-menu-card footer button:hover {
   color: #04342C;
 }
 
-/* EMPTY STATE */
+/* ── EMPTY STATE ─────────────────────────────────────────────────────── */
+
 .kd-empty-state {
   display: flex;
   flex-direction: column;
@@ -464,7 +539,8 @@ article.kd-menu-card footer button:hover {
   color: #f87171;
 }
 
-/* CHECKOUT */
+/* ── CHECKOUT ────────────────────────────────────────────────────────── */
+
 .kd-checkout-view {
   display: flex;
   flex-direction: column;
@@ -666,4 +742,406 @@ article.kd-menu-card footer button:hover {
   flex-direction: column;
   gap: 6px;
   margin-bottom: 16px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   OVERVIEW  (StudentOverview component — ov-* classes)
+   All of these were missing from the original CSS, causing the blank
+   Overview tab.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.ov-root {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Greeting ── */
+
+.ov-greeting h2 {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 4px;
+}
+
+.ov-greeting p {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* ── Stat cards grid ── */
+
+.ov-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.ov-stat-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(110, 231, 183, 0.1);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s;
+}
+
+.ov-stat-card:hover {
+  border-color: rgba(110, 231, 183, 0.25);
+}
+
+/* Pulse animation for the active-orders card */
+.ov-stat-card--pulse {
+  border-color: rgba(110, 231, 183, 0.35);
+  animation: ov-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes ov-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(110, 231, 183, 0); }
+  50%       { box-shadow: 0 0 0 6px rgba(110, 231, 183, 0.08); }
+}
+
+.ov-stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.ov-stat-value {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #e2e8f0;
+  line-height: 1.1;
+}
+
+.ov-stat-sub {
+  font-size: 11px;
+  color: #475569;
+}
+
+.ov-stat-link {
+  margin-top: 2px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6ee7b7;
+  cursor: pointer;
+  text-align: left;
+  transition: opacity 0.15s;
+}
+
+.ov-stat-link:hover {
+  opacity: 0.75;
+}
+
+/* ── Generic card ── */
+
+.ov-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(110, 231, 183, 0.1);
+  border-radius: 14px;
+  padding: 20px 24px;
+}
+
+.ov-card-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 14px;
+}
+
+.ov-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.ov-card-header .ov-card-title {
+  margin-bottom: 0;
+}
+
+.ov-see-all {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6ee7b7;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.ov-see-all:hover {
+  opacity: 0.75;
+}
+
+.ov-empty-hint {
+  font-size: 13px;
+  color: #475569;
+}
+
+/* ── Middle row ── */
+
+.ov-mid-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 760px) {
+  .ov-mid-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Favourite vendor ── */
+
+.ov-fav-vendor {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ov-fav-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6ee7b7, #6366f1);
+  color: #0f172a;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ov-fav-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 3px;
+}
+
+.ov-fav-meta {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* ── Top items list ── */
+
+.ov-top-items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ov-top-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+.ov-top-rank {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(110, 231, 183, 0.1);
+  color: #6ee7b7;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ov-top-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ov-top-qty {
+  font-size: 12px;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+/* ── Spend chart ── */
+
+.ov-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 140px;
+}
+
+.ov-chart-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+}
+
+.ov-chart-val {
+  font-size: 10px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.ov-chart-track {
+  flex: 1;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.ov-chart-bar {
+  width: 100%;
+  background: linear-gradient(to top, #6ee7b7, #6366f1);
+  border-radius: 6px;
+  transition: height 0.4s ease;
+  min-height: 4px;
+}
+
+/* ── Donut chart ── */
+
+.ov-donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.ov-donut-svg {
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+  /* counter-rotate the text so it reads normally */
+}
+
+.ov-donut-svg text {
+  transform: rotate(90deg);
+  transform-origin: 80px 80px;
+}
+
+.ov-donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-width: 140px;
+}
+
+.ov-donut-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.ov-donut-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ov-donut-legend-label {
+  flex: 1;
+  color: #94a3b8;
+}
+
+.ov-donut-legend-count {
+  font-weight: 700;
+  color: #e2e8f0;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 14px;
+}
+
+.ov-chart-label {
+  font-size: 10px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* ── Recent orders list ── */
+
+.ov-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ov-recent-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.ov-recent-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.ov-recent-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ov-recent-vendor {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.ov-recent-date {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.ov-recent-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.ov-recent-amount {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.ov-badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
 }

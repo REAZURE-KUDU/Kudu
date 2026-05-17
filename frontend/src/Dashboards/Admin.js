@@ -4,6 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useLocation } from "react-router-dom";
 import ProfilePanel from "./ProfilePanel";
 import API_BASE_URL from '../api';
+import Analytics from "./Analytics";
 
 const initials = (name) =>
   name.split(" ").slice(0, 2).map((w) => w[0].toUpperCase()).join("");
@@ -121,6 +122,32 @@ const VendorMenuTab = ({ vendorId }) => {
                 <p className="kd-menu-item-name">{item.name}</p>
                 {item.description && (
                   <p className="kd-menu-item-desc">{item.description}</p>
+                )}
+
+                {/* ── Dietary tags ── */}
+                {Array.isArray(item.dietaryTags) && item.dietaryTags.length > 0 && (
+                  <section className="kd-menu-item-tags" aria-label="Dietary tags">
+                    {item.dietaryTags.map((tag) => (
+                      <span key={tag} className="kd-tag kd-tag--dietary">{tag}</span>
+                    ))}
+                  </section>
+                )}
+
+                {/* ── Allergens ── */}
+                {Array.isArray(item.allergens) && item.allergens.length > 0 && (
+                  <section className="kd-menu-item-tags kd-menu-item-tags--allergens" aria-label="Allergens">
+                    <span className="kd-tag-prefix">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                      </svg>
+                      Contains:
+                    </span>
+                    {item.allergens.map((allergen) => (
+                      <span key={allergen} className="kd-tag kd-tag--allergen">{allergen}</span>
+                    ))}
+                  </section>
                 )}
               </section>
               <section className="kd-menu-item-right">
@@ -429,6 +456,39 @@ const SuspendModal = ({ vendor, onConfirm, onClose }) => {
   );
 };
 
+const RejectModal = ({ appeal, onConfirm, onClose }) => {
+  const [reason, setReason] = useState("");
+
+  return (
+    <section className="kd-modal-overlay" role="dialog" aria-modal="true"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <article className="kd-modal">
+        <header><h2 className="kd-modal-title">Reject appeal</h2></header>
+        <p className="kd-suspend-desc">
+          Provide a reason for rejecting <strong>{appeal.vendor?.businessName}</strong>'s appeal.
+          This will be included in the email sent to the vendor.
+        </p>
+        <section className="kd-form-group">
+          <label className="kd-form-label" htmlFor="reject-reason">Rejection reason</label>
+          <textarea
+            id="reject-reason"
+            className="kd-form-select"
+            rows={4}
+            placeholder="e.g. Insufficient evidence provided, previous violations on record…"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            style={{ resize: "vertical", fontFamily: "inherit", fontSize: "13px" }}
+          />
+        </section>
+        <footer className="kd-modal-footer">
+          <button className="kd-btn ghost" onClick={onClose}>Cancel</button>
+          <button className="kd-btn danger" onClick={() => onConfirm(reason)}>Reject appeal</button>
+        </footer>
+      </article>
+    </section>
+  );
+};
+
 const StudentsPage = () => {
   const [students, setStudents]             = useState([]);
   const [search, setSearch]                 = useState("");
@@ -533,15 +593,6 @@ const VendorsPage = () => {
       });
   };
 
-  const handleReinstate = (id) => {
-    fetch(`${API_BASE_URL}/api/vendors/${id}/reinstate`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((updated) => setVendors((prev) => prev.map((v) => v._id === id ? updated : v)));
-  };
-
   return (
     <section aria-label="Vendors management">
       <StatsRow items={vendors} type="vendors" />
@@ -576,9 +627,7 @@ const VendorsPage = () => {
                 <td>
                   <section className="kd-table-actions">
                     <button className="kd-action-btn view" onClick={() => setViewingVendor(vendor)}>View</button>
-                    {vendor.status === "suspended" ? (
-                      <button className="kd-action-btn restore" onClick={() => handleReinstate(vendor._id)}>Reinstate</button>
-                    ) : (
+                    {vendor.status !== "suspended" && (
                       <button className="kd-action-btn suspend" onClick={() => setSuspendingVendor(vendor)}>Suspend</button>
                     )}
                   </section>
@@ -721,120 +770,430 @@ const OverviewPage = () => {
 
   return (
     <main aria-labelledby="overview-title">
-      <h1 id="overview-title" className="sr-only">Orders overview</h1>
+      <h1 id="overview-title" className="sr-only">Overview</h1>
 
       {/* Date range filter */}
       <nav aria-label="Date range filter" style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
-          {[
-            { label: "Today",      value: "today" },
-            { label: "This week",  value: "week"  },
-            { label: "This month", value: "month" },
-            { label: "All time",   value: "all"   },
-          ].map(({ label, value }) => (
-            <button key={value} type="button" className={`kd-filter-pill ${dateRange === value ? "active" : ""}`}
-              onClick={() => { setDateRange(value); setPage(1); }}>
-              {label}
-            </button>
-          ))}
-        </nav>
-        
-        {/* Stats */}
-        <section className="kd-stats-row" style={{ gridTemplateColumns: "repeat(2, 1fr)" }}>
-          <article className="kd-stat-card">
-            <p className="kd-stat-label">Total orders</p>
-            <p className="kd-stat-value">{counts.total}</p>
-            {todaysCounts.total > 0 && <p className="kd-stat-trend">↑ {todaysCounts.total} today</p>}
-          </article>
-          <article className="kd-stat-card">
-            <p className="kd-stat-label">Total amount</p>
-            <p className="kd-stat-value green">{counts.totalAmount.toFixed(2)}</p>
-            {todaysCounts.totalAmount > 0 && <p className="kd-stat-trend">↑ R{todaysCounts.totalAmount.toFixed(2)} today</p>}
-          </article>
-        </section>
-        
-        {/* Refresh */}
-         <header style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
-          <button onClick={fetchOrders} className="kd-btn ghost" style={{ fontSize: "12px" }}>
-            ↻ Refresh {lastUpdated && `(Updated: ${lastUpdated.toLocaleTimeString()})`}
+        {[
+          { label: "Today",      value: "today" },
+          { label: "This week",  value: "week"  },
+          { label: "This month", value: "month" },
+          { label: "All time",   value: "all"   },
+        ].map(({ label, value }) => (
+          <button key={value} type="button" className={`kd-filter-pill ${dateRange === value ? "active" : ""}`}
+            onClick={() => { setDateRange(value); setPage(1); }}>
+            {label}
           </button>
-        </header>
+        ))}
+      </nav>
 
-        <section className="kd-overview-row">
-          {/* Orders table */}
-          <main>
-            <nav aria-label="Order status filter" className="kd-search-row">
-              <ul className="kd-filter-list">
-                {STATUS_FILTERS.map((f) => (
-                  <li key={f}>
-                    <button type="button" className={`kd-filter-pill ${filterStatus === f ? "active" : ""}`}
-                      onClick={() => handleFilterChange(f)}>
-                      {f.charAt(0).toUpperCase() + f.slice(1)}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+      {/* Stats */}
+      <section className="kd-stats-row" style={{ gridTemplateColumns: "repeat(2, 1fr)" }}>
+        <article className="kd-stat-card">
+          <p className="kd-stat-label">Total orders</p>
+          <p className="kd-stat-value">{counts.total}</p>
+          {todaysCounts.total > 0 && <p className="kd-stat-trend">↑ {todaysCounts.total} today</p>}
+        </article>
+        <article className="kd-stat-card">
+          <p className="kd-stat-label">Total amount</p>
+          <p className="kd-stat-value green">{counts.totalAmount.toFixed(2)}</p>
+          {todaysCounts.totalAmount > 0 && <p className="kd-stat-trend">↑ R{todaysCounts.totalAmount.toFixed(2)} today</p>}
+        </article>
+      </section>
 
-            <section className="kd-table-wrap">
-              <table className="kd-table">
-                <thead>
-                  <tr><th>Order ID</th><th>Student</th><th>Vendor</th><th>Total</th><th>Status</th><th>Date</th></tr>
-                </thead>
-                <tbody>
-                  {loading && <tr><td colSpan={6}><p className="kd-empty-state">Loading orders...</p></td></tr>}
-                  {!loading && filtered.length === 0 && <tr><td colSpan={6}><p className="kd-empty-state">No orders found.</p></td></tr>}
-                  {paginated.map((order) => (
-                    <tr key={order._id}>
-                      <td>#{order._id.slice(-6).toUpperCase()}</td>
-                      <td>{order.student ? `${order.student.firstName} ${order.student.lastName}` : "—"}</td>
-                      <td>{order.vendorName ?? order.vendor?.businessName ?? "—"}</td>
-                      <td>R{Number(order.totalAmount || order.total).toFixed(2)}</td>
-                      <td><small className={`kd-badge ${order.status}`}>{order.status}</small></td>
-                      <td>{formatDate(order.createdAt)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </section>
-            
-             {/* Pagination */}
-             <nav aria-label="Pagination" style={{ display: "flex", gap: "12px", justifyContent: "flex-end", marginTop: "1rem" }}>
-              <button className="kd-btn ghost" onClick={() => setPage((p) => p - 1)} disabled={page === 1}>← Prev</button>
-              <span style={{ fontSize: "13px", color: "var(--color-text-secondary)" }}>Page {page} of {totalPages}</span>
-              <button className="kd-btn ghost" onClick={() => setPage((p) => p + 1)} disabled={page === totalPages}>Next →</button>
-            </nav>
-          </main>
-          
-          {/* Sidebar */}
-          <aside className="kd-overview-sidebar">
-            <p className="kd-sidebar-title">Orders by status</p>
-            {[
-              { label: "Collected", key: "collected", color: "var(--kd-green)" },
-              { label: "Pending",   key: "pending",   color: "var(--kd-amber)" },
-              { label: "Received",  key: "received",  color: "var(--kd-amber)" },
-              { label: "Paid",      key: "paid",      color: "var(--kd-amber)" },
-              { label: "Preparing", key: "preparing", color: "var(--kd-amber)" },
-              { label: "Ready",     key: "ready",     color: "var(--kd-green)" },
-              { label: "Cancelled", key: "cancelled", color: "var(--kd-red)"   },
-            ].map(({ label, key, color }) => (
-              <section className="kd-bar-row" key={key}>
-                <section className="kd-bar-label"><span>{label}</span><span>{counts[key]}</span></section>
-                <section className="kd-bar-track">
-                  <span className="kd-bar-fill" style={{ width: `${barPct(counts[key])}%`, background: color }} />
-                </section>
-              </section>
-            ))}
+      {/* Refresh */}
+      <header style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+        <button onClick={fetchOrders} className="kd-btn ghost" style={{ fontSize: "12px" }}>
+          ↻ Refresh {lastUpdated && `(Updated: ${lastUpdated.toLocaleTimeString()})`}
+        </button>
+      </header>
 
-            <hr className="kd-overview-divider" />
-            <h2 className="kd-sidebar-title">Platform summary</h2>
-            <ul className="kd-summary-list">
-              <li><span>Active students</span><strong>{students.filter((s) => s.isActive).length}</strong></li>
-              <li><span>Active vendors</span><strong>{vendors.filter((v) => v.status === "active").length}</strong></li>
+      <section className="kd-overview-row">
+        {/* Orders table */}
+        <main>
+          <nav aria-label="Order status filter" className="kd-search-row">
+            <ul className="kd-filter-list">
+              {STATUS_FILTERS.map((f) => (
+                <li key={f}>
+                  <button type="button" className={`kd-filter-pill ${filterStatus === f ? "active" : ""}`}
+                    onClick={() => handleFilterChange(f)}>
+                    {f.charAt(0).toUpperCase() + f.slice(1)}
+                  </button>
+                </li>
+              ))}
             </ul>
-          </aside>
+          </nav>
+
+          <section className="kd-table-wrap">
+            <table className="kd-table">
+              <thead>
+                <tr><th>Order ID</th><th>Student</th><th>Vendor</th><th>Total</th><th>Status</th><th>Date</th></tr>
+              </thead>
+              <tbody>
+                {loading && <tr><td colSpan={6}><p className="kd-empty-state">Loading orders...</p></td></tr>}
+                {!loading && filtered.length === 0 && <tr><td colSpan={6}><p className="kd-empty-state">No orders found.</p></td></tr>}
+                {paginated.map((order) => (
+                  <tr key={order._id}>
+                    <td>#{order._id.slice(-6).toUpperCase()}</td>
+                    <td>{order.student ? `${order.student.firstName} ${order.student.lastName}` : "—"}</td>
+                    <td>{order.vendorName ?? order.vendor?.businessName ?? "—"}</td>
+                    <td>R{Number(order.totalAmount || order.total).toFixed(2)}</td>
+                    <td><small className={`kd-badge ${order.status}`}>{order.status}</small></td>
+                    <td>{formatDate(order.createdAt)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+
+          {/* Pagination */}
+          <nav aria-label="Pagination" style={{ display: "flex", gap: "12px", justifyContent: "flex-end", marginTop: "1rem" }}>
+            <button className="kd-btn ghost" onClick={() => setPage((p) => p - 1)} disabled={page === 1}>← Prev</button>
+            <span style={{ fontSize: "13px", color: "var(--color-text-secondary)" }}>Page {page} of {totalPages}</span>
+            <button className="kd-btn ghost" onClick={() => setPage((p) => p + 1)} disabled={page === totalPages}>Next →</button>
+          </nav>
+        </main>
+
+        {/* Sidebar */}
+        <aside className="kd-overview-sidebar">
+          <p className="kd-sidebar-title">Orders by status</p>
+          {[
+            { label: "Collected", key: "collected", color: "var(--kd-green)" },
+            { label: "Pending",   key: "pending",   color: "var(--kd-amber)" },
+            { label: "Received",  key: "received",  color: "var(--kd-amber)" },
+            { label: "Paid",      key: "paid",      color: "var(--kd-amber)" },
+            { label: "Preparing", key: "preparing", color: "var(--kd-amber)" },
+            { label: "Ready",     key: "ready",     color: "var(--kd-green)" },
+            { label: "Cancelled", key: "cancelled", color: "var(--kd-red)"   },
+          ].map(({ label, key, color }) => (
+            <section className="kd-bar-row" key={key}>
+              <section className="kd-bar-label"><span>{label}</span><span>{counts[key]}</span></section>
+              <section className="kd-bar-track">
+                <span className="kd-bar-fill" style={{ width: `${barPct(counts[key])}%`, background: color }} />
+              </section>
+            </section>
+          ))}
+
+          <hr className="kd-overview-divider" />
+          <h2 className="kd-sidebar-title">Platform summary</h2>
+          <ul className="kd-summary-list">
+            <li><span>Active students</span><strong>{students.filter((s) => s.isActive).length}</strong></li>
+            <li><span>Active vendors</span><strong>{vendors.filter((v) => v.status === "active").length}</strong></li>
+          </ul>
+        </aside>
+      </section>
+    </main>
+  );
+};
+
+const AppealsPage = () => {
+  const { getAccessTokenSilently } = useAuth0();
+  const [appeals,        setAppeals]        = useState([]);
+  const [loading,        setLoading]        = useState(true);
+  const [filterStatus,   setFilterStatus]   = useState("pending");
+  const [viewingAppeal,  setViewingAppeal]  = useState(null);
+  const [actionLoading,  setActionLoading]  = useState(null);
+  const [rejectingAppeal, setRejectingAppeal] = useState(null);
+
+  const getToken = useCallback(
+    () => getAccessTokenSilently({
+      authorizationParams: { audience: process.env.REACT_APP_AUTH0_AUDIENCE },
+    }),
+    [getAccessTokenSilently]
+  );
+
+  const fetchAppeals = useCallback(async () => {
+    setLoading(true);
+    try {
+      const token = await getToken();
+      const res = await fetch(`${API_BASE_URL}/api/appeals`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setAppeals(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Failed to fetch appeals:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [getToken]);
+
+  useEffect(() => { fetchAppeals(); }, [fetchAppeals]);
+
+  const handleAccept = async (appeal) => {
+    setActionLoading(appeal._id);
+    try {
+      const token = await getToken();
+      await fetch(`${API_BASE_URL}/api/vendors/${appeal.vendor._id}/reinstate`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      await fetch(`${API_BASE_URL}/api/appeals/${appeal._id}/review`, {
+        method:  "PATCH",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body:    JSON.stringify({ decision: "accepted" }),
+      });
+      setAppeals((prev) =>
+        prev.map((a) => a._id === appeal._id ? { ...a, status: "reviewed", decision: "accepted" } : a)
+      );
+      setViewingAppeal(null);
+    } catch (err) {
+      console.error("Failed to accept appeal:", err);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleReject = async (appeal, rejectionReason) => {
+    setActionLoading(appeal._id);
+    try {
+      const token = await getToken();
+      await fetch(`${API_BASE_URL}/api/appeals/${appeal._id}/review`, {
+        method:  "PATCH",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body:    JSON.stringify({ decision: "rejected", rejectionReason }),
+      });
+      setAppeals((prev) =>
+        prev.map((a) => a._id === appeal._id ? { ...a, status: "reviewed", decision: "rejected", rejectionReason } : a)
+      );
+      setRejectingAppeal(null);
+      setViewingAppeal(null);
+    } catch (err) {
+      console.error("Failed to reject appeal:", err);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const filtered = useMemo(() =>
+    filterStatus === "all" ? appeals : appeals.filter((a) => a.status === filterStatus),
+    [appeals, filterStatus]
+  );
+
+  const pendingCount = appeals.filter((a) => a.status === "pending").length;
+
+  return (
+    <section aria-label="Appeals management">
+
+      <section className="kd-stats-row" aria-label="Appeal statistics">
+        <article className="kd-stat-card">
+          <p className="kd-stat-label">Total appeals</p>
+          <p className="kd-stat-value">{appeals.length}</p>
+        </article>
+        <article className="kd-stat-card">
+          <p className="kd-stat-label">Pending review</p>
+          <p className="kd-stat-value" style={{ color: "var(--kd-amber)" }}>{pendingCount}</p>
+        </article>
+        <article className="kd-stat-card">
+          <p className="kd-stat-label">Reviewed</p>
+          <p className="kd-stat-value green">{appeals.filter((a) => a.status === "reviewed").length}</p>
+        </article>
+      </section>
+
+      <form className="kd-search-row" role="search" onSubmit={(e) => e.preventDefault()}>
+        <ul className="kd-filter-list">
+          {["all", "pending", "reviewed"].map((f) => (
+            <li key={f}>
+              <button
+                type="button"
+                className={`kd-filter-pill ${filterStatus === f ? "active" : ""}`}
+                onClick={() => setFilterStatus(f)}
+              >
+                {f.charAt(0).toUpperCase() + f.slice(1)}
+                {f === "pending" && pendingCount > 0 && (
+                  <span style={{
+                    marginLeft: 6, background: "var(--kd-amber)",
+                    color: "#000", borderRadius: "999px",
+                    padding: "0 6px", fontSize: "11px", fontWeight: 600,
+                  }}>
+                    {pendingCount}
+                  </span>
+                )}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </form>
+
+      <section className="kd-table-wrap">
+        <table className="kd-table">
+          <thead>
+            <tr>
+              <th>Vendor</th>
+              <th>Email</th>
+              <th>Suspension reason</th>
+              <th>Submitted</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading && (
+              <tr><td colSpan={6}><p className="kd-empty-state">Loading appeals…</p></td></tr>
+            )}
+            {!loading && filtered.length === 0 && (
+              <tr><td colSpan={6}><p className="kd-empty-state">No appeals found.</p></td></tr>
+            )}
+            {filtered.map((appeal) => (
+              <tr key={appeal._id}>
+                <td>
+                  <figure className="kd-cell-name">
+                    <p className="kd-cell-avatar purple" aria-hidden="true">
+                      {initials(appeal.vendor?.businessName || "?")}
+                    </p>
+                    <figcaption className="kd-cell-name-text">
+                      <strong>{appeal.vendor?.businessName || "—"}</strong>
+                    </figcaption>
+                  </figure>
+                </td>
+                <td>{appeal.vendor?.email || "—"}</td>
+                <td style={{ maxWidth: 180, color: "var(--color-text-secondary)", fontSize: 13 }}>
+                  {appeal.vendor?.statusReason || "—"}
+                </td>
+                <td>{formatDate(appeal.createdAt)}</td>
+                <td>
+                  <small className={`kd-badge ${appeal.status === "pending" ? "pending" : "active"}`}>
+                    {appeal.status}
+                  </small>
+                </td>
+                <td>
+                  <section className="kd-table-actions">
+                    <button
+                      className="kd-action-btn view"
+                      onClick={() => setViewingAppeal(appeal)}
+                    >
+                      View
+                    </button>
+                    {appeal.status === "pending" && (
+                      <>
+                        <button
+                          className="kd-action-btn restore"
+                          disabled={actionLoading === appeal._id}
+                          onClick={() => handleAccept(appeal)}
+                        >
+                          Accept
+                        </button>
+                        <button
+                          className="kd-action-btn suspend"
+                          disabled={actionLoading === appeal._id}
+                          onClick={() => setRejectingAppeal(appeal)}
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
+                  </section>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      {viewingAppeal && (
+        <section className="kd-modal-overlay" role="dialog" aria-modal="true"
+          onClick={(e) => { if (e.target === e.currentTarget) setViewingAppeal(null); }}>
+          <article className="kd-modal">
+            <header><h2 className="kd-modal-title">Appeal details</h2></header>
+
+            <figure className="kd-cell-name" style={{ marginBottom: 4 }}>
+              <p className="kd-cell-avatar purple" aria-hidden="true">
+                {initials(viewingAppeal.vendor?.businessName || "?")}
+              </p>
+              <figcaption className="kd-cell-name-text">
+                <strong>{viewingAppeal.vendor?.businessName}</strong>
+                <small className="kd-cell-subtext">{viewingAppeal.vendor?.email}</small>
+              </figcaption>
+            </figure>
+
+            <ul className="kd-detail-list">
+              {[
+                ["Submitted",         formatDate(viewingAppeal.createdAt)],
+                ["Appeal status",     viewingAppeal.status],
+                ["Vendor status",     viewingAppeal.vendor?.status],
+                ["Suspension reason", viewingAppeal.vendor?.statusReason || "—"],
+              ].map(([label, value]) => (
+                <li className="kd-detail-row" key={label}>
+                  <p className="kd-detail-label">{label}</p>
+                  <p className="kd-detail-value">
+                    {label.includes("status")
+                      ? <small className={`kd-badge ${value}`}>{value}</small>
+                      : value}
+                  </p>
+                </li>
+              ))}
+            </ul>
+
+            {viewingAppeal.status === "reviewed" && (
+              <section style={{
+                margin: "12px 0",
+                padding: "12px 14px",
+                borderRadius: 8,
+                background: viewingAppeal.decision === "accepted"
+                  ? "color-mix(in srgb, var(--kd-green) 12%, transparent)"
+                  : "color-mix(in srgb, var(--kd-red) 12%, transparent)",
+                border: `1px solid ${viewingAppeal.decision === "accepted" ? "var(--kd-green)" : "var(--kd-red)"}`,
+              }}>
+                <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 4,
+                  color: viewingAppeal.decision === "accepted" ? "var(--kd-green)" : "var(--kd-red)" }}>
+                  {viewingAppeal.decision === "accepted" ? "✓ Appeal accepted — vendor reinstated" : "✗ Appeal rejected"}
+                </p>
+                {viewingAppeal.decision === "rejected" && viewingAppeal.rejectionReason && (
+                  <p style={{ fontSize: 13, color: "var(--color-text-secondary)" }}>
+                    Reason: {viewingAppeal.rejectionReason}
+                  </p>
+                )}
+              </section>
+            )}
+
+            <section style={{ margin: "16px 0" }}>
+              <p className="kd-detail-label" style={{ marginBottom: 6 }}>Vendor's message</p>
+              <p style={{
+                fontSize: 13, lineHeight: 1.6,
+                background: "var(--color-background-secondary)",
+                borderRadius: 8, padding: "12px 14px",
+                color: "var(--color-text-primary)",
+                whiteSpace: "pre-wrap",
+              }}>
+                {viewingAppeal.message}
+              </p>
+            </section>
+
+            <footer className="kd-modal-footer">
+              <button className="kd-btn ghost" onClick={() => setViewingAppeal(null)}>
+                Close
+              </button>
+              {viewingAppeal.status === "pending" && (
+                <>
+                  <button
+                    className="kd-btn danger"
+                    disabled={actionLoading === viewingAppeal._id}
+                    onClick={() => { setViewingAppeal(null); setRejectingAppeal(viewingAppeal); }}
+                  >
+                    Reject
+                  </button>
+                  <button
+                    className="kd-btn primary"
+                    disabled={actionLoading === viewingAppeal._id}
+                    onClick={() => handleAccept(viewingAppeal)}
+                  >
+                    Accept & reinstate
+                  </button>
+                </>
+              )}
+            </footer>
+          </article>
         </section>
-      </main>
-    );
+      )}
+      {rejectingAppeal && (
+        <RejectModal
+          appeal={rejectingAppeal}
+          onConfirm={(reason) => handleReject(rejectingAppeal, reason)}
+          onClose={() => setRejectingAppeal(null)}
+        />
+      )}
+    </section>
+  );
 };
 
 const PlaceholderPage = ({ label }) => (
@@ -849,6 +1208,7 @@ const NAV_ITEMS = [
   { id: "overview",  label: "Overview",  icon: <><rect x="3" y="3" width="7" height="7" rx="2" /><rect x="14" y="3" width="7" height="7" rx="2" /><rect x="14" y="14" width="7" height="7" rx="2" /><rect x="3" y="14" width="7" height="7" rx="2" /></> },
   { id: "students",  label: "Students",  icon: <><path d="M12 3L2 8l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></> },
   { id: "vendors",   label: "Vendors",   icon: <path d="M3 9l9-6 9 6v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /> },
+  { id: "appeals",   label: "Appeals",   icon: <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /> },
   { id: "orders",    label: "Orders",    icon: <path d="M6 2h12v20H6zM6 6h12" /> },
   { id: "analytics", label: "Analytics", icon: <path d="M4 20V10M9 20V4M14 20v-6M19 20v-9" /> },
   { id: "reports",   label: "Reports",   icon: <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6M9 13h6M9 17h4" /></> },
@@ -859,6 +1219,7 @@ const PAGE_SUBTITLES = {
   overview: "Platform at a glance", students: "Manage registered students",
   vendors: "Manage registered vendors", orders: "View and manage all orders",
   analytics: "Platform usage and trends", reports: "Generated reports", settings: "System configuration",
+  appeals: "Review and action vendor suspension appeals",
 };
 
 // ── Main Admin component ─────────────────────────────────────────────
@@ -868,8 +1229,13 @@ const Admin = () => {
   const location = useLocation();
 
   const [expanded, setExpanded]         = useState(false);
-  const [activeNav, setActiveNav]       = useState("overview");
+  const [activeNav, setActiveNav] = useState( () => sessionStorage.getItem("adminNav") || "overview");
   const [adminProfile, setAdminProfile] = useState(null);
+
+  const handleNavChange = (id) => {
+    sessionStorage.setItem("adminNav", id);
+    setActiveNav(id);
+  };
 
   useEffect(() => {
     const state = location.state;
@@ -894,10 +1260,12 @@ const Admin = () => {
 
   const renderPage = () => {
     switch (activeNav) {
-      case "students": return <StudentsPage />;
-      case "vendors":  return <VendorsPage />;
-      case "overview": return <OverviewPage />;
-      default:         return <PlaceholderPage label={NAV_ITEMS.find((n) => n.id === activeNav)?.label ?? activeNav} />;
+      case "students":  return <StudentsPage />;
+      case "vendors":   return <VendorsPage />;
+      case "overview":  return <OverviewPage />;
+      case "appeals":   return <AppealsPage />;
+      case "analytics": return <Analytics />;
+      default:          return <PlaceholderPage label={NAV_ITEMS.find((n) => n.id === activeNav)?.label ?? activeNav} />;
     }
   };
 
@@ -918,7 +1286,7 @@ const Admin = () => {
               <li key={item.id}>
                 <button
                   className={`kd-nav-item ${activeNav === item.id ? "active" : ""}`}
-                  onClick={() => setActiveNav(item.id)}
+                  onClick={() => handleNavChange(item.id)}
                   aria-current={activeNav === item.id ? "page" : undefined}
                 >
                   <svg viewBox="0 0 24 24" className="kd-icon" aria-hidden="true">{item.icon}</svg>
